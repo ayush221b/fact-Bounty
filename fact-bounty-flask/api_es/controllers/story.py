@@ -10,7 +10,7 @@ class AllStories(MethodView):
     def get(self):
         search = current_app.elasticsearch.search(
             index='contents', doc_type='contents', body={
-                'query': {'multi_batch': {'query': query, 'fields': ['*']}}
+                'query': {'multi_batch': {'query': [], 'fields': ['*']}}
             }
         )
         stories = search['hits']['hits']
@@ -51,17 +51,23 @@ class ChangeUpvote(MethodView):
     :param request: the request being processed
     """
     def post(self):
-        id = request.form['story_id']
-        value = request.form['change_val']
-        story = current_app.elasticsearch.update(
-            index='contents', doc_type='contents', id=id, body={
-                "doc": {"approved_count": (hit.meta.doc.approved_count + value)}
+        try:
+            id = request.form['story_id']
+            value = request.form['change_val']
+            story = current_app.elasticsearch.update(
+                index='contents', doc_type='contents', id=id, body={
+                    "doc": {"approved_count": (hit.meta.doc.approved_count + value)}
+                }
+            )
+            response = {
+                'message': 'Changed upvote successfully'
+            } 
+            return make_response(jsonify(response)), 200
+        except Exception as e:
+            response = {
+                'message': str(e)
             }
-        )
-        response = {
-            'message': 'Changed upvote successfully'
-        } 
-        return make_response(jsonify(response)), 200
+            return make_response(response), 500
 
 
 class ChangeDownvote(MethodView):

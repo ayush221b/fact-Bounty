@@ -3,6 +3,7 @@ from flask_login import LoginManager
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import IndexAlready
 
 from .config import config
 
@@ -11,6 +12,10 @@ pagedown = PageDown()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+
+es = Elasticsearch()
+try:
+	es.create_index('fact-bounty')
 
 
 def create_app(config_name):
@@ -22,6 +27,7 @@ def create_app(config_name):
     login_manager.init_app(app)
     pagedown.init_app(app)
     app.elasticsearch = Elasticsearch()
+
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api')

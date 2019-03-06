@@ -14,6 +14,12 @@ api.add_url_rule(
 )
 
 api.add_url_rule(
+  '/users/forgetpassword',
+  view_func=userController['passwordresetrequest'],
+  methods=['POST']
+)
+
+api.add_url_rule(
   '/stories/all',
   view_func=storyController['allstories'],
   methods=['GET']

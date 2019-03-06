@@ -79,7 +79,30 @@ class Login(MethodView):
             # Return a server error using the HTTP Error Code 500 (Internal Server Error)
             return make_response(jsonify(response)), 500
 
+class PasswordResetRequest(MethodView):
+
+	def post(self):
+		try:
+			user = User.query.filter_by(email=request.form['email']).first()
+			
+			if not user:
+				# User does not exist. Therefore, we return an error message
+				response = {
+					'message': 'This user does not exist'
+                }
+				return make_response(jsonify(response)), 401
+		
+		except Exception as e:
+            # Create a response containing an string error message
+			response = {
+                'message': str(e)
+            }
+            # Return a server error using the HTTP Error Code 500 (Internal Server Error)
+			return make_response(jsonify(response)), 500
+
+
 userController = {
 	'register': Register.as_view('register'),
-	'login': Login.as_view('login')
+	'login': Login.as_view('login'),
+	'passwordresetrequest': PasswordResetRequest.as_view('passwordresetrequest')
 }
