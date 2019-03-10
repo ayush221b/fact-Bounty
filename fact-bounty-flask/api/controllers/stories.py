@@ -44,8 +44,9 @@ class ChangeUpvote(MethodView):
     :return: updated JSON object
     """
     def post(self):
-        id = request.form['story_id']
-        value = request.form['change_val']
+        data = request.get_json(silent=True)
+        id = data['story_id']
+        value = data['change_val']
         story = Story.query.filter_by(id=id).first()
         if story is None:
             return jsonify({
@@ -68,8 +69,9 @@ class ChangeDownvote(MethodView):
     :return: updated JSON object
     """
     def post(self):
-        id = request.form['story_id']
-        value = request.form['change_val']
+        data = request.get_json(silent=True)
+        id = data['story_id']
+        value = data['change_val']
         story = Story.query.filter_by(id=id).first()
         if story is None:
             return jsonify({
@@ -92,8 +94,9 @@ class ChangeMixvote(MethodView):
     :return: updated JSON object
     """
     def post(self):
-        id = request.form['story_id']
-        value = request.form['change_val']
+        data = request.get_json(silent=True)
+        id = data['story_id']
+        value = data['change_val']
         story = Story.query.filter_by(id=id).first()
         if story is None:
             return jsonify({
